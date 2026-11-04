@@ -3,6 +3,9 @@
     "error.io": "A file operation failed.",
     "error.network": "Could not reach the server. Check your internet connection.",
     "error.parse": "Some data could not be read; it may be damaged.",
-    "error.cancelled": "Cancelled."
+    "error.cancelled": "Cancelled.",
+    "error.http": "The server answered with an error (HTTP {{status}}).",
+    "error.download.checksum": "A downloaded file was damaged ({{file}}). Please try again.",
+    "error.download.failed": "Download failed ({{file}})."
   }
 }
