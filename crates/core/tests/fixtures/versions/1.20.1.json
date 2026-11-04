@@ -1,0 +1,271 @@
+{
+ "arguments": {
+  "game": [
+   "--username",
+   "${auth_player_name}",
+   "--version",
+   "${version_name}",
+   "--gameDir",
+   "${game_directory}",
+   "--assetsDir",
+   "${assets_root}",
+   "--assetIndex",
+   "${assets_index_name}",
+   "--uuid",
+   "${auth_uuid}",
+   "--accessToken",
+   "${auth_access_token}",
+   "--clientId",
+   "${clientid}",
+   "--xuid",
+   "${auth_xuid}",
+   "--userType",
+   "${user_type}",
+   "--versionType",
+   "${version_type}",
+   {
+    "rules": [
+     {
+      "action": "allow",
+      "features": {
+       "is_demo_user": true
+      }
+     }
+    ],
+    "value": "--demo"
+   },
+   {
+    "rules": [
+     {
+      "action": "allow",
+      "features": {
+       "has_custom_resolution": true
+      }
+     }
+    ],
+    "value": [
+     "--width",
+     "${resolution_width}",
+     "--height",
+     "${resolution_height}"
+    ]
+   },
+   {
+    "rules": [
+     {
+      "action": "allow",
+      "features": {
+       "has_quick_plays_support": true
+      }
+     }
+    ],
+    "value": [
+     "--quickPlayPath",
+     "${quickPlayPath}"
+    ]
+   },
+   {
+    "rules": [
+     {
+      "action": "allow",
+      "features": {
+       "is_quick_play_singleplayer": true
+      }
+     }
+    ],
+    "value": [
+     "--quickPlaySingleplayer",
+     "${quickPlaySingleplayer}"
+    ]
+   },
+   {
+    "rules": [
+     {
+      "action": "allow",
+      "features": {
+       "is_quick_play_multiplayer": true
+      }
+     }
+    ],
+    "value": [
+     "--quickPlayMultiplayer",
+     "${quickPlayMultiplayer}"
+    ]
+   },
+   {
+    "rules": [
+     {
+      "action": "allow",
+      "features": {
+       "is_quick_play_realms": true
+      }
+     }
+    ],
+    "value": [
+     "--quickPlayRealms",
+     "${quickPlayRealms}"
+    ]
+   }
+  ],
+  "jvm": [
+   {
+    "rules": [
+     {
+      "action": "allow",
+      "os": {
+       "name": "osx"
+      }
+     }
+    ],
+    "value": [
+     "-XstartOnFirstThread"
+    ]
+   },
+   {
+    "rules": [
+     {
+      "action": "allow",
+      "os": {
+       "name": "windows"
+      }
+     }
+    ],
+    "value": "-XX:HeapDumpPath=MojangTricksIntelDriversForPerformance_javaw.exe_minecraft.exe.heapdump"
+   },
+   {
+    "rules": [
+     {
+      "action": "allow",
+      "os": {
+       "arch": "x86"
+      }
+     }
+    ],
+    "value": "-Xss1M"
+   },
+   "-Djava.library.path=${natives_directory}",
+   "-Djna.tmpdir=${natives_directory}",
+   "-Dorg.lwjgl.system.SharedLibraryExtractPath=${natives_directory}",
+   "-Dio.netty.native.workdir=${natives_directory}",
+   "-Dminecraft.launcher.brand=${launcher_name}",
+   "-Dminecraft.launcher.version=${launcher_version}",
+   "-cp",
+   "${classpath}"
+  ]
+ },
+ "assetIndex": {
+  "id": "5",
+  "sha1": "ada52cc672270e8dc69e912b2ba0ea9c141ed664",
+  "size": 413067,
+  "totalSize": 651970283,
+  "url": "https://piston-meta.mojang.com/v1/packages/ada52cc672270e8dc69e912b2ba0ea9c141ed664/5.json"
+ },
+ "assets": "5",
+ "complianceLevel": 1,
+ "downloads": {
+  "client": {
+   "sha1": "0c3ec587af28e5a785c0b4a7b8a30f9a8f78f838",
+   "size": 23028853,
+   "url": "https://piston-data.mojang.com/v1/objects/0c3ec587af28e5a785c0b4a7b8a30f9a8f78f838/client.jar"
+  },
+  "client_mappings": {
+   "sha1": "6c48521eed01fe2e8ecdadbd5ae348415f3c47da",
+   "size": 8001795,
+   "url": "https://piston-data.mojang.com/v1/objects/6c48521eed01fe2e8ecdadbd5ae348415f3c47da/client.txt"
+  },
+  "server": {
+   "sha1": "84194a2f286ef7c14ed7ce0090dba59902951553",
+   "size": 47791053,
+   "url": "https://piston-data.mojang.com/v1/objects/84194a2f286ef7c14ed7ce0090dba59902951553/server.jar"
+  },
+  "server_mappings": {
+   "sha1": "0b4dba049482496c507b2387a73a913230ebbd76",
+   "size": 6154195,
+   "url": "https://piston-data.mojang.com/v1/objects/0b4dba049482496c507b2387a73a913230ebbd76/server.txt"
+  }
+ },
+ "id": "1.20.1",
+ "javaVersion": {
+  "component": "java-runtime-gamma",
+  "majorVersion": 17
+ },
+ "libraries": [
+  {
+   "downloads": {
+    "artifact": {
+     "path": "ca/weblite/java-objc-bridge/1.1/java-objc-bridge-1.1.jar",
+     "sha1": "1227f9e0666314f9de41477e3ec277e542ed7f7b",
+     "size": 1330045,
+     "url": "https://libraries.minecraft.net/ca/weblite/java-objc-bridge/1.1/java-objc-bridge-1.1.jar"
+    }
+   },
+   "name": "ca.weblite:java-objc-bridge:1.1",
+   "rules": [
+    {
+     "action": "allow",
+     "os": {
+      "name": "osx"
+     }
+    }
+   ]
+  },
+  {
+   "downloads": {
+    "artifact": {
+     "path": "io/netty/netty-transport-native-epoll/4.1.82.Final/netty-transport-native-epoll-4.1.82.Final-linux-aarch_64.jar",
+     "sha1": "476409d6255001ca53a55f65b01c13822f8dc93a",
+     "size": 39489,
+     "url": "https://libraries.minecraft.net/io/netty/netty-transport-native-epoll/4.1.82.Final/netty-transport-native-epoll-4.1.82.Final-linux-aarch_64.jar"
+    }
+   },
+   "name": "io.netty:netty-transport-native-epoll:4.1.82.Final:linux-aarch_64",
+   "rules": [
+    {
+     "action": "allow",
+     "os": {
+      "name": "linux"
+     }
+    }
+   ]
+  },
+  {
+   "downloads": {
+    "artifact": {
+     "path": "com/mojang/logging/1.1.1/logging-1.1.1.jar",
+     "sha1": "832b8e6674a9b325a5175a3a6267dfaf34c85139",
+     "size": 15343,
+     "url": "https://libraries.minecraft.net/com/mojang/logging/1.1.1/logging-1.1.1.jar"
+    }
+   },
+   "name": "com.mojang:logging:1.1.1"
+  },
+  {
+   "downloads": {
+    "artifact": {
+     "path": "org/lwjgl/lwjgl-glfw/3.3.1/lwjgl-glfw-3.3.1.jar",
+     "sha1": "cbac1b8d30cb4795149c1ef540f912671a8616d0",
+     "size": 128801,
+     "url": "https://libraries.minecraft.net/org/lwjgl/lwjgl-glfw/3.3.1/lwjgl-glfw-3.3.1.jar"
+    }
+   },
+   "name": "org.lwjgl:lwjgl-glfw:3.3.1"
+  }
+ ],
+ "logging": {
+  "client": {
+   "argument": "-Dlog4j.configurationFile=${path}",
+   "file": {
+    "id": "client-1.12.xml",
+    "sha1": "bd65e7d2e3c237be76cfbef4c2405033d7f91521",
+    "size": 888,
+    "url": "https://piston-data.mojang.com/v1/objects/bd65e7d2e3c237be76cfbef4c2405033d7f91521/client-1.12.xml"
+   },
+   "type": "log4j2-xml"
+  }
+ },
+ "mainClass": "net.minecraft.client.main.Main",
+ "minimumLauncherVersion": 21,
+ "releaseTime": "2023-06-12T13:25:51+00:00",
+ "time": "2023-06-12T13:25:51+00:00",
+ "type": "release"
+}

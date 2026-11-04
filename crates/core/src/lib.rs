@@ -9,6 +9,7 @@ pub mod http;
 pub mod paths;
 pub mod settings;
 pub mod tasks;
+pub mod versions;
 
 pub use endpoints::Endpoints;
 pub use error::{AppError, Result};

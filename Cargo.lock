@@ -108,6 +108,7 @@ dependencies = [
  "directories",
  "futures",
  "hex",
+ "regex",
  "reqwest",
  "serde",
  "serde_json",
