@@ -10,6 +10,9 @@
     "error.version.not_found": "Minecraft version {{version}} was not found.",
     "error.java.checksum": "The downloaded Java package was damaged. Please try again.",
     "error.java.unavailable": "No Java {{major}} download is available for this computer.",
-    "error.java.invalid_path": "That Java path doesn't work. Pick the java executable of a JDK or JRE."
+    "error.java.invalid_path": "That Java path doesn't work. Pick the java executable of a JDK or JRE.",
+    "error.instance.not_found": "That instance doesn't exist any more.",
+    "error.instance.corrupt": "The settings of instance \"{{id}}\" are damaged and it was skipped.",
+    "error.instance.bad_file": "That file name can't be used ({{file}})."
   }
 }

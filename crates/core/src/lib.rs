@@ -6,6 +6,7 @@ pub mod endpoints;
 pub mod error;
 pub mod fsutil;
 pub mod http;
+pub mod instances;
 pub mod java;
 pub mod paths;
 pub mod settings;
@@ -18,6 +19,7 @@ pub use paths::Paths;
 
 use download::Downloader;
 use http::HttpClient;
+use instances::InstanceStore;
 use settings::Settings;
 use tasks::TaskManager;
 
@@ -28,6 +30,7 @@ pub struct Core {
     pub downloader: Downloader,
     pub endpoints: Endpoints,
     pub tasks: TaskManager,
+    pub instances: InstanceStore,
 }
 
 impl Core {
@@ -35,12 +38,14 @@ impl Core {
         let settings = Settings::load(&paths)?;
         let http = HttpClient::new()?;
         let downloader = Downloader::new(http.clone(), settings.download_threads as usize);
+        let instances = InstanceStore::new(paths.clone());
         Ok(Core {
             paths,
             http,
             downloader,
             endpoints,
             tasks: TaskManager::new(),
+            instances,
         })
     }
 }

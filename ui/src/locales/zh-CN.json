@@ -10,6 +10,9 @@
     "error.version.not_found": "找不到 Minecraft 版本 {{version}}。",
     "error.java.checksum": "下载的 Java 安装包损坏了，请重试。",
     "error.java.unavailable": "找不到适合这台电脑的 Java {{major}} 下载。",
-    "error.java.invalid_path": "这个 Java 路径用不了，请选择 JDK 或 JRE 里的 java 可执行文件。"
+    "error.java.invalid_path": "这个 Java 路径用不了，请选择 JDK 或 JRE 里的 java 可执行文件。",
+    "error.instance.not_found": "这个实例已经不存在了。",
+    "error.instance.corrupt": "实例 \"{{id}}\" 的配置文件损坏了，已跳过。",
+    "error.instance.bad_file": "这个文件名不能用（{{file}}）。"
   }
 }
