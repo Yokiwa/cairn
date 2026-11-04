@@ -1,7 +1,7 @@
-# Cairn（暂定名）· Minecraft Java 版第三方启动器 · 设计文档
+# Cairn · Minecraft Java 版第三方启动器 · 设计文档
 
 - 日期：2026-11-04
-- 状态：待用户审阅
+- 状态：已通过用户审阅（2026-11-04）
 - 界面原型：https://claude.ai/artifact/HGjG8aTc9U3V1urxufBtBi （示例数据）
 
 ## 1. 背景和目标
@@ -21,7 +21,7 @@
 ### 我的假设（用户可以纠正）
 
 - 公开的开源项目，仓库公开
-- 名字另起，不用 "PCL"，也不用 Mojang / Minecraft 的 logo。"Cairn" 只是暂定名
+- 名字定为 **Cairn**（用户 2026-11-04 确认），不用 "PCL"，也不用 Mojang / Minecraft 的 logo
 - 不收集任何使用数据（没有遥测）
 
 ### 怎样算成功
