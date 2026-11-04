@@ -314,7 +314,7 @@ pub async fn install_version(
         .ok_or_else(|| AppError::new("error.version.not_found").with_param("version", id))?;
 
     let env = Environment::current();
-    let mut items = plan_game_files(&v, &env, &core.paths, &core.endpoints)?;
+    let items = plan_game_files(&v, &env, &core.paths, &core.endpoints)?;
     if let Some(ai) = &v.asset_index {
         let index_item = DownloadItem {
             url: ai.url.clone(),
