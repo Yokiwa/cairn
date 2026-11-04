@@ -15,6 +15,9 @@
     "error.instance.corrupt": "实例 \"{{id}}\" 的配置文件损坏了，已跳过。",
     "error.instance.bad_file": "这个文件名不能用（{{file}}）。",
     "error.loader.not_found": "{{loader}} 没有适配 Minecraft {{mc}} 的版本。",
-    "error.loader.unsupported": "暂时还不能安装 {{loader}}。"
+    "error.loader.unsupported": "暂时还不能安装 {{loader}}。",
+    "error.loader.bad_installer": "模组加载器的安装器读不出来。",
+    "error.loader.processor_failed": "安装模组加载器时出错（{{processor}}）。",
+    "error.loader.processor_output": "安装模组加载器时生成的文件不对（{{processor}}）。"
   }
 }

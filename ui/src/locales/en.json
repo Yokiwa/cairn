@@ -15,6 +15,9 @@
     "error.instance.corrupt": "The settings of instance \"{{id}}\" are damaged and it was skipped.",
     "error.instance.bad_file": "That file name can't be used ({{file}}).",
     "error.loader.not_found": "{{loader}} is not available for Minecraft {{mc}}.",
-    "error.loader.unsupported": "{{loader}} can't be installed yet."
+    "error.loader.unsupported": "{{loader}} can't be installed yet.",
+    "error.loader.bad_installer": "The mod loader installer could not be read.",
+    "error.loader.processor_failed": "Setting up the mod loader failed ({{processor}}).",
+    "error.loader.processor_output": "Setting up the mod loader produced unexpected files ({{processor}})."
   }
 }
