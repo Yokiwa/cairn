@@ -12,10 +12,7 @@ use std::cmp::Ordering;
 /// missing segments count as 0.
 pub fn compare_versions(a: &str, b: &str) -> Ordering {
     fn nums(s: &str) -> Vec<u64> {
-        let core = s
-            .split(|c: char| c == '-' || c == ' ' || c == '+')
-            .next()
-            .unwrap_or("");
+        let core = s.split(['-', ' ', '+']).next().unwrap_or("");
         core.split('.')
             .map(|seg| {
                 seg.chars()
