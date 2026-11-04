@@ -154,6 +154,16 @@ pub struct VersionJson {
     pub logging: Option<Logging>,
     #[serde(rename = "type", default, skip_serializing_if = "Option::is_none")]
     pub kind: Option<String>,
+    /// Which version's client jar to run (set when a profile inherits one).
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub jar: Option<String>,
+}
+
+impl VersionJson {
+    /// Id of the version whose `<id>.jar` is the game client.
+    pub fn jar_id(&self) -> &str {
+        self.jar.as_deref().unwrap_or(&self.id)
+    }
 }
 
 /// Apply a child profile (loader) on top of its parent (vanilla).
@@ -197,5 +207,6 @@ pub fn merge(parent: VersionJson, child: VersionJson) -> VersionJson {
         java_version: child.java_version.or(parent.java_version),
         logging: child.logging.or(parent.logging),
         kind: child.kind.or(parent.kind),
+        jar: child.jar.or(parent.jar).or(Some(parent.id)),
     }
 }

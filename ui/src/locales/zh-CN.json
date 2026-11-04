@@ -6,6 +6,7 @@
     "error.cancelled": "已取消。",
     "error.http": "服务器返回了错误（HTTP {{status}}）。",
     "error.download.checksum": "下载的文件损坏了（{{file}}），请重试。",
-    "error.download.failed": "下载失败（{{file}}）。"
+    "error.download.failed": "下载失败（{{file}}）。",
+    "error.version.not_found": "找不到 Minecraft 版本 {{version}}。"
   }
 }

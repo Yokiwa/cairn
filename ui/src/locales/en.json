@@ -6,6 +6,7 @@
     "error.cancelled": "Cancelled.",
     "error.http": "The server answered with an error (HTTP {{status}}).",
     "error.download.checksum": "A downloaded file was damaged ({{file}}). Please try again.",
-    "error.download.failed": "Download failed ({{file}})."
+    "error.download.failed": "Download failed ({{file}}).",
+    "error.version.not_found": "Minecraft version {{version}} was not found."
   }
 }

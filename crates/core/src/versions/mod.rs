@@ -1,5 +1,6 @@
 //! Minecraft versions: manifest, version JSON, rules, installation.
 
+pub mod install;
 pub mod manifest;
 pub mod maven;
 pub mod rules;
