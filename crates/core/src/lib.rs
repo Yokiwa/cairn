@@ -6,6 +6,7 @@ pub mod endpoints;
 pub mod error;
 pub mod fsutil;
 pub mod http;
+pub mod java;
 pub mod paths;
 pub mod settings;
 pub mod tasks;
