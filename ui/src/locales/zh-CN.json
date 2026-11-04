@@ -13,6 +13,8 @@
     "error.java.invalid_path": "这个 Java 路径用不了，请选择 JDK 或 JRE 里的 java 可执行文件。",
     "error.instance.not_found": "这个实例已经不存在了。",
     "error.instance.corrupt": "实例 \"{{id}}\" 的配置文件损坏了，已跳过。",
-    "error.instance.bad_file": "这个文件名不能用（{{file}}）。"
+    "error.instance.bad_file": "这个文件名不能用（{{file}}）。",
+    "error.loader.not_found": "{{loader}} 没有适配 Minecraft {{mc}} 的版本。",
+    "error.loader.unsupported": "暂时还不能安装 {{loader}}。"
   }
 }

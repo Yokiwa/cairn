@@ -13,6 +13,8 @@
     "error.java.invalid_path": "That Java path doesn't work. Pick the java executable of a JDK or JRE.",
     "error.instance.not_found": "That instance doesn't exist any more.",
     "error.instance.corrupt": "The settings of instance \"{{id}}\" are damaged and it was skipped.",
-    "error.instance.bad_file": "That file name can't be used ({{file}})."
+    "error.instance.bad_file": "That file name can't be used ({{file}}).",
+    "error.loader.not_found": "{{loader}} is not available for Minecraft {{mc}}.",
+    "error.loader.unsupported": "{{loader}} can't be installed yet."
   }
 }
