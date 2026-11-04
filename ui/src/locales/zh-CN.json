@@ -1,0 +1,8 @@
+{
+  "errors": {
+    "error.io": "文件操作失败。",
+    "error.network": "连不上服务器，请检查网络连接。",
+    "error.parse": "有些数据读不出来，可能已经损坏。",
+    "error.cancelled": "已取消。"
+  }
+}

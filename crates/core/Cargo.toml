@@ -1,0 +1,19 @@
+[package]
+name = "cairn-core"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+repository.workspace = true
+description = "Core library of the Cairn Minecraft launcher"
+
+[dependencies]
+serde.workspace = true
+serde_json.workspace = true
+ts-rs.workspace = true
+chrono.workspace = true
+directories.workspace = true
+reqwest.workspace = true
+tokio.workspace = true
+
+[dev-dependencies]
+tempfile.workspace = true

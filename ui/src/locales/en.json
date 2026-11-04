@@ -1,0 +1,8 @@
+{
+  "errors": {
+    "error.io": "A file operation failed.",
+    "error.network": "Could not reach the server. Check your internet connection.",
+    "error.parse": "Some data could not be read; it may be damaged.",
+    "error.cancelled": "Cancelled."
+  }
+}
