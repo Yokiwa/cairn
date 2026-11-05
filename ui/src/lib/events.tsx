@@ -22,11 +22,13 @@ export function EventsBridge() {
           ui().finishTask(e.id, "failed");
           const task = ui().tasks[e.id];
           if (task?.kind === "launch" && task.instanceId) ui().setRunning(task.instanceId, null);
+          void qc.invalidateQueries({ queryKey: ["running"] });
           if (e.error.key !== "error.cancelled") ui().showToast(errorText(e.error, t));
         }
       }),
       b.onInstanceExit((e) => {
         ui().setRunning(e.instance_id, null);
+        void qc.invalidateQueries({ queryKey: ["running"] });
         if (e.exit.code !== 0 && e.exit.code !== null) ui().showCrash({ instanceId: e.instance_id, exit: e.exit });
         void qc.invalidateQueries({ queryKey: ["instances"] });
       }),
