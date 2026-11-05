@@ -60,6 +60,7 @@ pub enum TaskEvent {
     },
     Done {
         id: TaskId,
+        #[ts(type = "unknown")]
         result: serde_json::Value,
     },
     Failed {

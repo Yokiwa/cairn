@@ -4,3 +4,8 @@ ui/dist/
 .superpowers/
 *.log
 .DS_Store
+/crates/*/bindings
+/src-tauri/bindings
+/src-tauri/gen
+ui/playwright-report/
+ui/test-results/
