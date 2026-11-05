@@ -1,0 +1,90 @@
+name: Release
+
+# Push a tag like v0.1.0 to build installers for every platform and attach
+# them to a draft GitHub Release. Publish the draft by hand after checking it.
+on:
+  push:
+    tags: ["v*"]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    name: Build (${{ matrix.name }})
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - name: Windows
+            os: windows-latest
+            args: ""
+          - name: Linux
+            os: ubuntu-22.04
+            args: ""
+          - name: macOS (Apple silicon)
+            os: macos-latest
+            args: --target aarch64-apple-darwin
+          - name: macOS (Intel)
+            os: macos-latest
+            args: --target x86_64-apple-darwin
+    runs-on: ${{ matrix.os }}
+    env:
+      # Optional: set as repository variables (Settings → Secrets and variables → Actions → Variables).
+      CAIRN_MSA_CLIENT_ID: ${{ vars.CAIRN_MSA_CLIENT_ID }}
+      CAIRN_UPDATER_PUBKEY: ${{ vars.TAURI_UPDATER_PUBKEY }}
+      # Optional secrets; without them installers are built but auto-update files are not.
+      TAURI_SIGNING_PRIVATE_KEY: ${{ secrets.TAURI_SIGNING_PRIVATE_KEY }}
+      TAURI_SIGNING_PRIVATE_KEY_PASSWORD: ${{ secrets.TAURI_SIGNING_PRIVATE_KEY_PASSWORD }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Linux system packages
+        if: runner.os == 'Linux'
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y libwebkit2gtk-4.1-dev libappindicator3-dev librsvg2-dev patchelf
+
+      - uses: dtolnay/rust-toolchain@stable
+        with:
+          targets: ${{ matrix.os == 'macos-latest' && 'aarch64-apple-darwin,x86_64-apple-darwin' || '' }}
+      - uses: Swatinem/rust-cache@v2
+
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 10
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+          cache-dependency-path: ui/pnpm-lock.yaml
+      - name: Install UI dependencies
+        working-directory: ui
+        run: pnpm install --frozen-lockfile
+
+      - name: Updater artifacts only when a signing key is configured
+        id: updater
+        shell: bash
+        run: |
+          if [ -n "$TAURI_SIGNING_PRIVATE_KEY" ] && [ -n "$CAIRN_UPDATER_PUBKEY" ]; then
+            echo 'extra=--config {"bundle":{"createUpdaterArtifacts":true}}' >> "$GITHUB_OUTPUT"
+          else
+            echo "No updater key configured: building installers without auto-update files."
+            echo 'extra=' >> "$GITHUB_OUTPUT"
+          fi
+
+      - uses: tauri-apps/tauri-action@v0
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tauriScript: node ui/node_modules/@tauri-apps/cli/tauri.js
+          tagName: ${{ github.ref_type == 'tag' && github.ref_name || 'v__VERSION__' }}
+          releaseName: Cairn ${{ github.ref_type == 'tag' && github.ref_name || 'v__VERSION__' }}
+          releaseBody: |
+            Installers for Windows, macOS and Linux are attached below.
+            See the README for how to open unsigned builds on Windows and macOS.
+          releaseDraft: true
+          prerelease: false
+          includeUpdaterJson: ${{ steps.updater.outputs.extra != '' }}
+          args: ${{ matrix.args }} ${{ steps.updater.outputs.extra }}
