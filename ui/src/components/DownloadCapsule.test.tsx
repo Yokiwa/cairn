@@ -22,3 +22,16 @@ test("DownloadCapsule shows percent, speed and all-done", async () => {
   act(() => emitMockEvent({ type: "done", id: "t1", result: null }));
   expect(await screen.findByText("All done")).toBeInTheDocument();
 });
+
+test("a running game whose files are verified shows all done, not a spinner", async () => {
+  renderApp(<DownloadCapsule />);
+  act(() =>
+    emitMockEvent({
+      type: "progress",
+      id: "launch1",
+      progress: { stage: "game", done_files: 300, total_files: 300, done_bytes: 0, total_bytes: 0, bytes_per_sec: 0 },
+    }),
+  );
+  // The launch task keeps running while the game is open, but nothing is downloading.
+  expect(await screen.findByText("All done")).toBeInTheDocument();
+});

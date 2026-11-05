@@ -10,7 +10,8 @@ export default function DownloadCapsule() {
   const tasks = Object.values(all).filter((x) => x.progress);
   const [open, setOpen] = useState(false);
   if (tasks.length === 0) return null;
-  const running = tasks.filter((x) => x.status === "running");
+  // A launch task stays "running" while the game is open; it only counts while files are still coming in.
+  const running = tasks.filter((x) => x.status === "running" && percent(x.progress!) < 100);
   const main = running[0];
   const pct = main?.progress ? percent(main.progress) : 100;
   const stageLabel = (stage: string) => t(`downloads.stage.${stage}`, { defaultValue: stage });
@@ -27,7 +28,7 @@ export default function DownloadCapsule() {
             <div className="font-bold">{t("downloads.title")}</div>
             {tasks.map((task) => {
               const p = task.progress!;
-              const v = task.status === "running" ? percent(p) : 100;
+              const v = task.status === "failed" ? percent(p) : task.status === "running" ? percent(p) : 100;
               return (
                 <div key={task.id} className="flex flex-col gap-1">
                   <div className="flex justify-between text-xs">
