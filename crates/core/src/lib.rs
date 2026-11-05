@@ -10,6 +10,7 @@ pub mod fsutil;
 pub mod http;
 pub mod instances;
 pub mod java;
+pub mod launch;
 pub mod loaders;
 pub mod paths;
 pub mod settings;
