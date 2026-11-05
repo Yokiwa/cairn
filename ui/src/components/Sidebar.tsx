@@ -44,7 +44,7 @@ export default function Sidebar() {
   const accounts = useQuery({ queryKey: ["accounts"], queryFn: () => getBackend().accountsList() });
   const active = accounts.data?.find((a) => a.active);
   return (
-    <nav aria-label={t("nav.main")} className="flex flex-[1_1_220px] flex-col gap-1 border-b border-line bg-sidebar p-3.5 sm:max-w-[240px] sm:border-r sm:border-b-0">
+    <nav aria-label={t("nav.main")} className="flex flex-none flex-col gap-1 border-b sm:flex-[1_1_220px] border-line bg-sidebar p-3.5 sm:max-w-[240px] sm:border-r sm:border-b-0">
       <div className="flex items-center gap-2.5 px-2.5 pt-1 pb-4">
         <Logo />
         <span className="text-base font-bold tracking-wide">Cairn</span>

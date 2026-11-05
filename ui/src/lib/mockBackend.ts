@@ -72,7 +72,34 @@ function fresh(empty = false): MockState {
   };
 }
 
+const SETTINGS_KEY = "cairn-mock-settings";
+const ACCOUNTS_KEY = "cairn-mock-accounts";
+
+/** The mock keeps settings and accounts across page reloads (like the real app does on disk). */
+function load<T>(key: string): T | null {
+  try {
+    const raw = localStorage.getItem(key);
+    return raw ? (JSON.parse(raw) as T) : null;
+  } catch {
+    return null;
+  }
+}
+
+function store(key: string, v: unknown) {
+  try {
+    if (v === null) localStorage.removeItem(key);
+    else localStorage.setItem(key, JSON.stringify(v));
+  } catch {
+    /* storage unavailable: data lasts for this page only */
+  }
+}
+
+const storeSettings = (s: Settings | null) => store(SETTINGS_KEY, s);
+const storeAccounts = () => store(ACCOUNTS_KEY, state.accounts);
+
 let state = fresh();
+state.settings = load<Settings>(SETTINGS_KEY) ?? state.settings;
+state.accounts = load<Account[]>(ACCOUNTS_KEY) ?? state.accounts;
 type Listener<T> = (v: T) => void;
 const listeners = {
   task: new Set<Listener<TaskEvent>>(),
@@ -96,6 +123,8 @@ export function resetMock(opts: { empty?: boolean; accounts?: Account[]; msaConf
   timers.forEach(clearTimeout);
   timers.clear();
   state = fresh(opts.empty);
+  storeSettings(null);
+  store(ACCOUNTS_KEY, null);
   if (opts.accounts) state.accounts = opts.accounts.map((a) => ({ ...a }));
   state.msaConfigured = opts.msaConfigured ?? false;
 }
@@ -104,6 +133,7 @@ export function resetMock(opts: { empty?: boolean; accounts?: Account[]; msaConf
 export function mockFinishLogin(username = "Steve_MS") {
   const acc: Account = { id: "11111111-2222-4333-8444-555555555555", username, kind: "microsoft", active: true };
   state.accounts = state.accounts.map((a) => ({ ...a, active: false })).concat(acc);
+  storeAccounts();
   listeners.authDone.forEach((l) => l({ ...acc }));
 }
 
@@ -238,6 +268,7 @@ export const mockBackend: Backend = {
   settingsGet: () => delay({ ...state.settings }),
   settingsSet: async (s) => {
     state.settings = { ...s, download_threads: Math.min(64, Math.max(1, s.download_threads)) };
+    storeSettings(state.settings);
   },
   accountsList: () => delay(state.accounts.map((a) => ({ ...a }))),
   accountLoginStart: async () => {
@@ -250,14 +281,17 @@ export const mockBackend: Backend = {
     state.accounts = state.accounts.filter((a) => a.id !== id).map((a) => ({ ...a, active: false }));
     const acc: Account = { id, username: name, kind: "offline", active: true };
     state.accounts.push(acc);
+    storeAccounts();
     return { ...acc };
   },
   accountRemove: async (id) => {
     state.accounts = state.accounts.filter((a) => a.id !== id);
     if (state.accounts.length && !state.accounts.some((a) => a.active)) state.accounts[0].active = true;
+    storeAccounts();
   },
   accountSetActive: async (id) => {
     state.accounts = state.accounts.map((a) => ({ ...a, active: a.id === id }));
+    storeAccounts();
   },
   tasksList: () => delay([...state.tasks.values()]),
   taskCancel: async (id) => {
