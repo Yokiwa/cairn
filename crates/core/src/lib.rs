@@ -12,6 +12,7 @@ pub mod instances;
 pub mod java;
 pub mod launch;
 pub mod loaders;
+pub mod logging;
 pub mod paths;
 pub mod settings;
 pub mod tasks;
@@ -26,6 +27,7 @@ use auth::AuthService;
 use download::Downloader;
 use http::HttpClient;
 use instances::InstanceStore;
+use launch::RunningRegistry;
 use settings::Settings;
 use tasks::TaskManager;
 
@@ -38,6 +40,7 @@ pub struct Core {
     pub tasks: TaskManager,
     pub instances: InstanceStore,
     pub auth: AuthService,
+    pub running: RunningRegistry,
 }
 
 impl Core {
@@ -69,6 +72,7 @@ impl Core {
             tasks: TaskManager::new(),
             instances,
             auth,
+            running: RunningRegistry::default(),
         })
     }
 }

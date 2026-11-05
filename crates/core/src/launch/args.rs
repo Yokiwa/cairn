@@ -35,14 +35,22 @@ pub struct LaunchCommand {
 impl LaunchCommand {
     /// The arguments with the access token replaced by `***`, for logs.
     pub fn redacted(&self) -> Vec<String> {
+        let mut prev_was_token_flag = false;
         self.args
             .iter()
             .map(|a| {
-                let mut a = a.clone();
-                for s in self.secrets.iter().filter(|s| s.len() > 1) {
-                    a = a.replace(s.as_str(), "***");
-                }
-                a
+                let out = if prev_was_token_flag || self.secrets.iter().any(|s| s == a) {
+                    "***".to_string()
+                } else {
+                    let mut a = a.clone();
+                    // Tokens embedded in longer arguments (e.g. legacy "token:<t>:<uuid>").
+                    for s in self.secrets.iter().filter(|s| s.len() >= 8) {
+                        a = a.replace(s.as_str(), "***");
+                    }
+                    a
+                };
+                prev_was_token_flag = a == "--accessToken" || a == "--session";
+                out
             })
             .collect()
     }
@@ -262,6 +270,7 @@ mod tests {
             created_at: chrono::Utc::now(),
             last_played_at: None,
             mods: BTreeMap::new(),
+            launch_version: None,
         }
     }
     fn session() -> Session {

@@ -27,6 +27,9 @@ flate2.workspace = true
 tar.workspace = true
 md-5.workspace = true
 keyring.workspace = true
+tracing.workspace = true
+tracing-subscriber.workspace = true
+tracing-appender.workspace = true
 
 [dev-dependencies]
 tempfile.workspace = true

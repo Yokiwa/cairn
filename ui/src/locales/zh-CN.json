@@ -31,6 +31,8 @@
     "error.auth.no_game": "这个微软账号没有购买 Minecraft: Java 版。",
     "error.auth.relogin": "登录已过期，请重新登录。",
     "error.auth.no_account": "请先添加一个账号。",
-    "error.auth.keyring": "无法使用系统钥匙串保存登录信息。"
+    "error.auth.keyring": "无法使用系统钥匙串保存登录信息。",
+    "error.launch.already_running": "这个实例已经在运行了。",
+    "error.launch.spawn": "游戏启动不了。"
   }
 }

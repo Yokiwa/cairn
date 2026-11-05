@@ -69,6 +69,16 @@ pub struct Instance {
     pub last_played_at: Option<DateTime<Utc>>,
     #[serde(default)]
     pub mods: BTreeMap<String, ModSource>,
+    /// The installed version profile to launch for `loader` (filled in on first launch).
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub launch_version: Option<LaunchVersion>,
+}
+
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize, TS)]
+#[ts(export, export_to = "../../../ui/src/bindings/")]
+pub struct LaunchVersion {
+    pub loader: LoaderSpec,
+    pub id: String,
 }
 
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize, TS)]
@@ -203,6 +213,7 @@ impl InstanceStore {
             created_at: Utc::now(),
             last_played_at: None,
             mods: BTreeMap::new(),
+            launch_version: None,
         };
         for sub in GAME_SUBDIRS {
             std::fs::create_dir_all(self.game_dir(&id).join(sub))?;
