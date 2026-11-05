@@ -58,9 +58,13 @@ impl From<std::io::Error> for AppError {
 
 impl From<reqwest::Error> for AppError {
     fn from(e: reqwest::Error) -> Self {
+        // reqwest's own message hides the cause ("error sending request"); add the chain.
         let mut detail = e.to_string();
-        if let Some(url) = e.url() {
-            detail = format!("{detail} ({url})");
+        let mut source = std::error::Error::source(&e);
+        while let Some(s) = source {
+            detail.push_str(": ");
+            detail.push_str(&s.to_string());
+            source = s.source();
         }
         AppError::new("error.network").with_detail(detail)
     }
@@ -91,6 +95,21 @@ mod tests {
         let e: AppError = std::io::Error::new(std::io::ErrorKind::NotFound, "nope").into();
         assert_eq!(e.key, "error.io");
         assert!(e.detail.contains("nope"));
+    }
+
+    #[tokio::test]
+    async fn network_error_detail_includes_cause() {
+        // Nothing listens on port 9 of localhost: connection refused.
+        let e: AppError = reqwest::get("http://127.0.0.1:9/")
+            .await
+            .unwrap_err()
+            .into();
+        assert_eq!(e.key, "error.network");
+        assert!(
+            e.detail.to_lowercase().contains("refused") || e.detail.contains("os error"),
+            "{}",
+            e.detail
+        );
     }
 
     #[test]

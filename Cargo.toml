@@ -15,7 +15,7 @@ serde_json = "1"
 ts-rs = { version = "10", features = ["serde-json-impl", "chrono-impl"] }
 chrono = { version = "0.4", features = ["serde"] }
 directories = "5"
-reqwest = { version = "0.12", default-features = false, features = ["rustls-tls", "json", "stream", "gzip"] }
+reqwest = { version = "0.12", default-features = false, features = ["rustls-tls", "rustls-tls-native-roots", "rustls-tls-webpki-roots", "json", "stream", "gzip"] }
 tokio = { version = "1", features = ["full"] }
 tempfile = "3"
 futures = "0.3"
