@@ -80,7 +80,7 @@ fn noop() -> Arc<dyn Fn(&Progress) + Send + Sync> {
     Arc::new(|_: &Progress| {})
 }
 
-fn collector() -> (Arc<Mutex<Vec<String>>>, Arc<dyn Fn(&str) + Send + Sync>) {
+fn collector() -> (Arc<Mutex<Vec<String>>>, cairn_core::launch::LogFn) {
     let lines = Arc::new(Mutex::new(Vec::new()));
     let l2 = lines.clone();
     (
