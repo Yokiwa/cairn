@@ -1,6 +1,6 @@
 [workspace]
 resolver = "2"
-members = ["crates/core"]
+members = ["crates/core", "crates/cli"]
 
 [workspace.package]
 version = "0.1.0"
@@ -32,6 +32,11 @@ flate2 = "1"
 tar = "0.4"
 md-5 = "0.10"
 tracing = "0.1"
+sysinfo = { version = "0.33", default-features = false, features = ["system"] }
+clap = { version = "4", features = ["derive"] }
+indicatif = "0.17"
+assert_cmd = "2"
+predicates = "3"
 tracing-subscriber = { version = "0.3", features = ["fmt", "env-filter"] }
 tracing-appender = "0.2"
 keyring = { version = "3", features = ["apple-native", "windows-native", "async-secret-service", "tokio", "crypto-rust"] }

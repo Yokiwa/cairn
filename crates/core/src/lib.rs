@@ -15,6 +15,7 @@ pub mod loaders;
 pub mod logging;
 pub mod paths;
 pub mod settings;
+pub mod system;
 pub mod tasks;
 pub mod versions;
 
