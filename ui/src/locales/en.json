@@ -18,6 +18,19 @@
     "error.loader.unsupported": "{{loader}} can't be installed yet.",
     "error.loader.bad_installer": "The mod loader installer could not be read.",
     "error.loader.processor_failed": "Setting up the mod loader failed ({{processor}}).",
-    "error.loader.processor_output": "Setting up the mod loader produced unexpected files ({{processor}})."
+    "error.loader.processor_output": "Setting up the mod loader produced unexpected files ({{processor}}).",
+    "error.auth.invalid_name": "Player names are 3–16 characters: letters, digits and underscores only.",
+    "error.auth.not_configured": "Microsoft sign-in isn't set up in this build yet. Use an offline account for now.",
+    "error.auth.failed": "Signing in failed. Please try again.",
+    "error.auth.expired": "The sign-in code expired. Please start again.",
+    "error.auth.declined": "Sign-in was cancelled in the browser.",
+    "error.auth.no_xbox": "This Microsoft account has no Xbox profile yet. Sign in once at xbox.com, then try again.",
+    "error.auth.child_account": "This is a child account; an adult needs to add it to a Microsoft family first.",
+    "error.auth.region": "Xbox Live isn't available in this account's country or region.",
+    "error.auth.adult_verification": "This account needs adult verification on xbox.com first.",
+    "error.auth.no_game": "This Microsoft account doesn't own Minecraft: Java Edition.",
+    "error.auth.relogin": "Your sign-in has expired. Please sign in again.",
+    "error.auth.no_account": "Add an account first.",
+    "error.auth.keyring": "The system keychain couldn't be used to store your sign-in."
   }
 }

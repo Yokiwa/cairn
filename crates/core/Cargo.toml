@@ -25,6 +25,8 @@ regex.workspace = true
 zip.workspace = true
 flate2.workspace = true
 tar.workspace = true
+md-5.workspace = true
+keyring.workspace = true
 
 [dev-dependencies]
 tempfile.workspace = true

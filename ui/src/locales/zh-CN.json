@@ -18,6 +18,19 @@
     "error.loader.unsupported": "暂时还不能安装 {{loader}}。",
     "error.loader.bad_installer": "模组加载器的安装器读不出来。",
     "error.loader.processor_failed": "安装模组加载器时出错（{{processor}}）。",
-    "error.loader.processor_output": "安装模组加载器时生成的文件不对（{{processor}}）。"
+    "error.loader.processor_output": "安装模组加载器时生成的文件不对（{{processor}}）。",
+    "error.auth.invalid_name": "玩家名要 3–16 个字符，只能有字母、数字和下划线。",
+    "error.auth.not_configured": "这个版本还没配置微软登录，请先用离线账号。",
+    "error.auth.failed": "登录失败，请重试。",
+    "error.auth.expired": "登录代码过期了，请重新开始。",
+    "error.auth.declined": "已在浏览器里取消登录。",
+    "error.auth.no_xbox": "这个微软账号还没有 Xbox 档案。请先在 xbox.com 登录一次，再回来重试。",
+    "error.auth.child_account": "这是儿童账号，需要先由成年人把它加入微软家庭组。",
+    "error.auth.region": "这个账号所在的国家或地区不能使用 Xbox Live。",
+    "error.auth.adult_verification": "这个账号需要先在 xbox.com 完成成年人验证。",
+    "error.auth.no_game": "这个微软账号没有购买 Minecraft: Java 版。",
+    "error.auth.relogin": "登录已过期，请重新登录。",
+    "error.auth.no_account": "请先添加一个账号。",
+    "error.auth.keyring": "无法使用系统钥匙串保存登录信息。"
   }
 }
