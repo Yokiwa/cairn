@@ -48,6 +48,7 @@ interface MockState {
   running: Set<string>;
   tasks: Map<string, TaskInfo>;
   launches: Map<string, string>; // task id → instance id
+  msaConfigured: boolean;
 }
 
 function fresh(empty = false): MockState {
@@ -67,6 +68,7 @@ function fresh(empty = false): MockState {
     running: new Set(),
     tasks: new Map(),
     launches: new Map(),
+    msaConfigured: false,
   };
 }
 
@@ -90,11 +92,19 @@ function later(ms: number, f: () => void) {
 }
 
 /** Reset all mock data (tests). `empty` starts with no instances. */
-export function resetMock(opts: { empty?: boolean; accounts?: Account[] } = {}) {
+export function resetMock(opts: { empty?: boolean; accounts?: Account[]; msaConfigured?: boolean } = {}) {
   timers.forEach(clearTimeout);
   timers.clear();
   state = fresh(opts.empty);
-  if (opts.accounts) state.accounts = opts.accounts;
+  if (opts.accounts) state.accounts = opts.accounts.map((a) => ({ ...a }));
+  state.msaConfigured = opts.msaConfigured ?? false;
+}
+
+/** Finish a pending Microsoft sign-in (tests). */
+export function mockFinishLogin(username = "Steve_MS") {
+  const acc: Account = { id: "11111111-2222-4333-8444-555555555555", username, kind: "microsoft", active: true };
+  state.accounts = state.accounts.map((a) => ({ ...a, active: false })).concat(acc);
+  listeners.authDone.forEach((l) => l({ ...acc }));
 }
 
 /** Push a task event as if the backend sent it (tests). */
@@ -122,7 +132,7 @@ export function mockCrash(instanceId: string, code = 1) {
 }
 
 if (typeof window !== "undefined") {
-  (window as unknown as { __cairnMock: unknown }).__cairnMock = { crash: mockCrash, reset: resetMock, emit: emitMockEvent };
+  (window as unknown as { __cairnMock: unknown }).__cairnMock = { crash: mockCrash, reset: resetMock, emit: emitMockEvent, finishLogin: (n?: string) => mockFinishLogin(n) };
 }
 
 let nextTask = 1;
@@ -175,7 +185,7 @@ const delay = <T>(v: T): Promise<T> => new Promise((r) => setTimeout(() => r(v),
 
 export const mockBackend: Backend = {
   systemInfo: () =>
-    delay({ os: "linux", total_memory_mb: 16384, recommended_memory_mb: 6144, app_version: "0.1.0", microsoft_login_configured: false, updates_enabled: false }),
+    delay({ os: "linux", total_memory_mb: 16384, recommended_memory_mb: 6144, app_version: "0.1.0", microsoft_login_configured: state.msaConfigured, updates_enabled: false }),
   versionsList: (snapshots) =>
     delay([
       ...(snapshots ? SNAPSHOTS.map((id) => ({ id, type: "snapshot" as const })) : []),
@@ -231,7 +241,8 @@ export const mockBackend: Backend = {
   },
   accountsList: () => delay(state.accounts.map((a) => ({ ...a }))),
   accountLoginStart: async () => {
-    throw err("error.auth.not_configured");
+    if (!state.msaConfigured) throw err("error.auth.not_configured");
+    return { user_code: "ABCD-EFGH", verification_uri: "https://www.microsoft.com/link", expires_in: 900, interval: 5 };
   },
   accountAddOffline: async (name) => {
     if (!/^[A-Za-z0-9_]{3,16}$/.test(name)) throw err("error.auth.invalid_name", { name });
