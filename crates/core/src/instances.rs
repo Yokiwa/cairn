@@ -14,7 +14,7 @@ const GAME_SUBDIRS: [&str; 5] = ["mods", "saves", "resourcepacks", "shaderpacks"
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, Serialize, Deserialize, TS)]
 #[serde(rename_all = "lowercase")]
-#[ts(export, export_to = "../../../ui/src/bindings/")]
+#[ts(export)]
 pub enum LoaderKind {
     Fabric,
     Quilt,
@@ -24,7 +24,7 @@ pub enum LoaderKind {
 }
 
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize, TS)]
-#[ts(export, export_to = "../../../ui/src/bindings/")]
+#[ts(export)]
 pub struct LoaderSpec {
     pub kind: LoaderKind,
     pub version: String,
@@ -32,7 +32,7 @@ pub struct LoaderSpec {
 
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize, TS, Default)]
 #[serde(tag = "mode", rename_all = "lowercase")]
-#[ts(export, export_to = "../../../ui/src/bindings/")]
+#[ts(export)]
 pub enum JavaSetting {
     #[default]
     Auto,
@@ -44,7 +44,7 @@ pub enum JavaSetting {
 
 /// Where a mod file was installed from (written by the phase 2 mod tools).
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize, TS)]
-#[ts(export, export_to = "../../../ui/src/bindings/")]
+#[ts(export)]
 pub struct ModSource {
     pub source: String,
     pub project_id: String,
@@ -53,7 +53,7 @@ pub struct ModSource {
 
 /// `instance.json` (spec section 3).
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize, TS)]
-#[ts(export, export_to = "../../../ui/src/bindings/")]
+#[ts(export)]
 pub struct Instance {
     pub schema: u32,
     pub id: String,
@@ -75,14 +75,14 @@ pub struct Instance {
 }
 
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize, TS)]
-#[ts(export, export_to = "../../../ui/src/bindings/")]
+#[ts(export)]
 pub struct LaunchVersion {
     pub loader: LoaderSpec,
     pub id: String,
 }
 
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize, TS)]
-#[ts(export, export_to = "../../../ui/src/bindings/")]
+#[ts(export)]
 pub struct NewInstance {
     pub name: String,
     pub minecraft: String,
@@ -91,7 +91,7 @@ pub struct NewInstance {
 }
 
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize, TS)]
-#[ts(export, export_to = "../../../ui/src/bindings/")]
+#[ts(export)]
 pub struct ModFile {
     pub file_name: String,
     pub enabled: bool,

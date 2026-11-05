@@ -12,7 +12,7 @@ use ts_rs::TS;
 use crate::{AppError, Result};
 
 #[derive(Debug, Clone, Default, PartialEq, Eq, Serialize, Deserialize, TS)]
-#[ts(export, export_to = "../../../ui/src/bindings/")]
+#[ts(export)]
 pub struct Progress {
     pub stage: String,
     #[ts(type = "number")]
@@ -33,7 +33,7 @@ pub type TaskId = String;
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize, TS)]
 #[serde(rename_all = "lowercase")]
-#[ts(export, export_to = "../../../ui/src/bindings/")]
+#[ts(export)]
 pub enum TaskState {
     Running,
     Done,
@@ -42,7 +42,7 @@ pub enum TaskState {
 }
 
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize, TS)]
-#[ts(export, export_to = "../../../ui/src/bindings/")]
+#[ts(export)]
 pub struct TaskInfo {
     pub id: TaskId,
     pub title: String,
@@ -52,7 +52,7 @@ pub struct TaskInfo {
 
 #[derive(Debug, Clone, PartialEq, Serialize, Deserialize, TS)]
 #[serde(tag = "type", rename_all = "snake_case")]
-#[ts(export, export_to = "../../../ui/src/bindings/")]
+#[ts(export)]
 pub enum TaskEvent {
     Progress {
         id: TaskId,

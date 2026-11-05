@@ -30,7 +30,7 @@ impl LogTail {
 }
 
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize, TS)]
-#[ts(export, export_to = "../../../ui/src/bindings/")]
+#[ts(export)]
 pub struct GameExit {
     pub code: Option<i32>,
     pub tail: Vec<String>,

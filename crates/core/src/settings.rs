@@ -6,7 +6,7 @@ use crate::{Paths, Result};
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize, TS, Default)]
 #[serde(rename_all = "lowercase")]
-#[ts(export, export_to = "../../../ui/src/bindings/")]
+#[ts(export)]
 pub enum Theme {
     #[default]
     System,
@@ -17,7 +17,7 @@ pub enum Theme {
 /// Global launcher settings (`settings.json`).
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize, TS)]
 #[serde(default)]
-#[ts(export, export_to = "../../../ui/src/bindings/")]
+#[ts(export)]
 pub struct Settings {
     pub schema: u32,
     /// `None` follows the system language.

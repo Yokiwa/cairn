@@ -13,7 +13,7 @@ const MANIFEST_TTL: Duration = Duration::from_secs(10 * 60);
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize, TS)]
 #[serde(rename_all = "snake_case")]
-#[ts(export, export_to = "../../../ui/src/bindings/")]
+#[ts(export)]
 pub enum VersionKind {
     Release,
     Snapshot,
@@ -23,7 +23,7 @@ pub enum VersionKind {
 
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize, TS)]
 #[serde(rename_all = "camelCase")]
-#[ts(export, export_to = "../../../ui/src/bindings/")]
+#[ts(export)]
 pub struct ManifestEntry {
     pub id: String,
     #[serde(rename = "type")]

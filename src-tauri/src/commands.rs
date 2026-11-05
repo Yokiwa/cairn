@@ -57,7 +57,7 @@ impl AppState {
 }
 
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize, TS)]
-#[ts(export, export_to = "../../ui/src/bindings/")]
+#[ts(export)]
 pub struct SystemInfo {
     pub os: String,
     #[ts(type = "number")]
@@ -69,21 +69,21 @@ pub struct SystemInfo {
 }
 
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize, TS)]
-#[ts(export, export_to = "../../ui/src/bindings/")]
+#[ts(export)]
 pub struct InstancesList {
     pub instances: Vec<Instance>,
     pub errors: Vec<AppError>,
 }
 
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize, TS)]
-#[ts(export, export_to = "../../ui/src/bindings/")]
+#[ts(export)]
 pub struct LogEvent {
     pub instance_id: String,
     pub line: String,
 }
 
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize, TS)]
-#[ts(export, export_to = "../../ui/src/bindings/")]
+#[ts(export)]
 pub struct ExitEvent {
     pub instance_id: String,
     pub exit: GameExit,

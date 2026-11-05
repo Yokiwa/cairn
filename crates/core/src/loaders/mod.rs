@@ -15,7 +15,7 @@ use crate::versions::compare_versions;
 use crate::{Core, Result};
 
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize, TS)]
-#[ts(export, export_to = "../../../ui/src/bindings/")]
+#[ts(export)]
 pub struct LoaderVersion {
     pub version: String,
     pub stable: bool,

@@ -45,7 +45,7 @@ pub fn msa_client_id() -> Option<&'static str> {
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize, TS)]
 #[serde(rename_all = "lowercase")]
-#[ts(export, export_to = "../../../ui/src/bindings/")]
+#[ts(export)]
 pub enum AccountKind {
     Microsoft,
     Offline,
@@ -53,7 +53,7 @@ pub enum AccountKind {
 
 /// One entry of `accounts.json` — no secrets in here.
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize, TS)]
-#[ts(export, export_to = "../../../ui/src/bindings/")]
+#[ts(export)]
 pub struct Account {
     /// Player UUID with dashes.
     pub id: String,
@@ -63,7 +63,7 @@ pub struct Account {
 }
 
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize, TS)]
-#[ts(export, export_to = "../../../ui/src/bindings/")]
+#[ts(export)]
 pub struct DeviceCode {
     pub user_code: String,
     pub verification_uri: String,

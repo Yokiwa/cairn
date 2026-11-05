@@ -15,7 +15,7 @@ pub use adoptium::{download_java, ensure_java};
 pub use detect::find_installations;
 
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize, TS)]
-#[ts(export, export_to = "../../../ui/src/bindings/")]
+#[ts(export)]
 pub struct JavaInstall {
     /// The `java` executable.
     #[ts(type = "string")]

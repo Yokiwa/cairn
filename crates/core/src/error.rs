@@ -9,7 +9,7 @@ use ts_rs::TS;
 /// `key` names a message in `ui/src/locales/*.json` (under `errors`), `params`
 /// fills its placeholders, and `detail` carries the technical cause.
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize, TS)]
-#[ts(export, export_to = "../../../ui/src/bindings/")]
+#[ts(export)]
 pub struct AppError {
     pub key: String,
     pub params: BTreeMap<String, String>,
