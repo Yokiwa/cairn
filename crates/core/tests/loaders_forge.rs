@@ -339,7 +339,7 @@ async fn legacy_installer_format_extracts_universal_jar() {
     let server = MockServer::start().await;
     let lmv = "1.12.2-14.23.0.2486";
     let profile = json!({
-        "install": {"profileName": "Forge", "target": format!("1.12.2-forge1.12.2-14.23.0.2486"), "path": format!("net.minecraftforge:forge:{lmv}"), "version": "forge 14.23.0.2486", "filePath": format!("forge-{lmv}-universal.jar"), "minecraft": "1.12.2"},
+        "install": {"profileName": "Forge", "target": "1.12.2-forge1.12.2-14.23.0.2486", "path": format!("net.minecraftforge:forge:{lmv}"), "version": "forge 14.23.0.2486", "filePath": format!("forge-{lmv}-universal.jar"), "minecraft": "1.12.2"},
         "versionInfo": {"id": "1.12.2-forge1.12.2-14.23.0.2486", "inheritsFrom": "1.12.2", "mainClass": "net.minecraft.launchwrapper.Launch", "minecraftArguments": "--tweakClass net.minecraftforge.fml.common.launcher.FMLTweaker", "libraries": [{"name": format!("net.minecraftforge:forge:{lmv}")}]}
     });
     let installer = zip_of(&[
