@@ -33,6 +33,7 @@
     "error.auth.no_account": "请先添加一个账号。",
     "error.auth.keyring": "无法使用系统钥匙串保存登录信息。",
     "error.launch.already_running": "这个实例已经在运行了。",
-    "error.launch.spawn": "游戏启动不了。"
+    "error.launch.spawn": "游戏启动不了。",
+    "error.update": "检查更新失败。"
   }
 }
