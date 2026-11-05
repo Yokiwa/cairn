@@ -202,6 +202,7 @@
     "error.auth.keyring": "The system keychain couldn't be used to store your sign-in.",
     "error.launch.already_running": "This instance is already running.",
     "error.launch.spawn": "The game could not be started.",
-    "error.update": "Checking for updates failed."
+    "error.update": "Checking for updates failed.",
+    "error.unknown": "Something went wrong."
   }
 }
