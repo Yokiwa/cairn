@@ -117,7 +117,10 @@
     "javaCustom": "Custom path",
     "javaPath": "Path to the java executable",
     "jvmArgs": "JVM arguments (advanced)",
-    "notFound": "This instance no longer exists."
+    "notFound": "This instance no longer exists.",
+    "loaderVersion": "Loader version",
+    "stable": "stable",
+    "loaderVersionHint": "Changing it installs that {{loader}} build on the next launch."
   },
   "settings": {
     "title": "Settings",

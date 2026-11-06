@@ -55,3 +55,21 @@ test("unknown instance shows a message", async () => {
   renderApp(<App />, { route: "/instances/nope" });
   expect(await screen.findByText("This instance no longer exists.")).toBeInTheDocument();
 });
+
+test("loader version can be changed in instance settings", async () => {
+  renderApp(<App />, { route: "/instances/tech-valley" });
+  await userEvent.click(await screen.findByRole("tab", { name: "Settings" }));
+  const select = await screen.findByRole("combobox", { name: "Loader version" });
+  expect(select).toHaveValue("21.1.77");
+  await screen.findByRole("option", { name: /21\.1\.265/ });
+  await userEvent.selectOptions(select, "21.1.265");
+  await userEvent.click(screen.getByRole("button", { name: "Save" }));
+  await vi.waitFor(async () => expect((await getBackend().instanceGet("tech-valley")).loader).toEqual({ kind: "neoforge", version: "21.1.265" }));
+});
+
+test("vanilla instances have no loader version setting", async () => {
+  renderApp(<App />, { route: "/instances/vanilla-1-21-4" });
+  await userEvent.click(await screen.findByRole("tab", { name: "Settings" }));
+  await screen.findByLabelText("JVM arguments (advanced)");
+  expect(screen.queryByRole("combobox", { name: "Loader version" })).not.toBeInTheDocument();
+});

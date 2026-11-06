@@ -117,7 +117,10 @@
     "javaCustom": "手动指定",
     "javaPath": "java 可执行文件的路径",
     "jvmArgs": "JVM 参数（高级）",
-    "notFound": "这个实例已经不存在了。"
+    "notFound": "这个实例已经不存在了。",
+    "loaderVersion": "加载器版本",
+    "stable": "稳定版",
+    "loaderVersionHint": "改了以后，下次启动时会安装这个 {{loader}} 版本。"
   },
   "settings": {
     "title": "设置",

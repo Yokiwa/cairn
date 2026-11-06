@@ -35,7 +35,19 @@ function InstanceSettings({ instance }: { instance: Instance }) {
   const [javaPath, setJavaPath] = useState(instance.java.mode === "path" ? instance.java.path : "");
   const [custom, setCustom] = useState(instance.java.mode === "path");
   const [args, setArgs] = useState(instance.jvm_args.join(" "));
+  const [loaderVersion, setLoaderVersion] = useState(instance.loader?.version ?? "");
   const argsId = useId();
+  const loaderId = useId();
+  const loaderVersions = useQuery({
+    queryKey: ["loaderVersions", instance.loader?.kind, instance.minecraft],
+    queryFn: () => getBackend().loaderVersions(instance.loader!.kind, instance.minecraft),
+    enabled: instance.loader !== null,
+  });
+  const versionOptions = (() => {
+    const list = loaderVersions.data ?? [];
+    const current = instance.loader?.version;
+    return current && !list.some((v) => v.version === current) ? [{ version: current, stable: false }, ...list] : list;
+  })();
 
   async function save() {
     const next: Instance = {
@@ -43,6 +55,7 @@ function InstanceSettings({ instance }: { instance: Instance }) {
       memory_mb: memory,
       java: custom && javaPath.trim() ? { mode: "path", path: javaPath.trim() } : { mode: "auto" },
       jvm_args: args.split(/\s+/).filter(Boolean),
+      loader: instance.loader && loaderVersion ? { kind: instance.loader.kind, version: loaderVersion } : instance.loader,
     };
     try {
       await getBackend().instanceUpdate(next);
@@ -57,6 +70,26 @@ function InstanceSettings({ instance }: { instance: Instance }) {
     <div className="flex max-w-[640px] flex-col gap-4.5 rounded-2xl border border-line bg-panel p-5.5">
       {info.data && (
         <MemorySlider label={t("detail.memory")} value={memory} onChange={setMemory} totalMb={info.data.total_memory_mb} recommendedMb={info.data.recommended_memory_mb} />
+      )}
+      {instance.loader && (
+        <div className="flex flex-col gap-1.5">
+          <label htmlFor={loaderId} className="font-semibold">
+            {t("detail.loaderVersion")}
+          </label>
+          <select
+            id={loaderId}
+            value={loaderVersion}
+            onChange={(e) => setLoaderVersion(e.target.value)}
+            className="min-h-11 rounded-[10px] border border-line-strong bg-bg px-3 font-mono text-[13px] text-fg"
+          >
+            {versionOptions.map((v) => (
+              <option key={v.version} value={v.version}>
+                {v.stable ? `${v.version} (${t("detail.stable")})` : v.version}
+              </option>
+            ))}
+          </select>
+          <div className="text-xs text-muted">{t("detail.loaderVersionHint", { loader: LOADER_NAMES[instance.loader.kind] })}</div>
+        </div>
       )}
       <fieldset className="m-0 flex flex-col gap-2 border-0 p-0">
         <legend className="mb-1 font-semibold">{t("detail.javaMode")}</legend>
