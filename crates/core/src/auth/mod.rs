@@ -336,6 +336,39 @@ impl AuthService {
         })
     }
 
+    /// Exchange the stored refresh token for a fresh Minecraft token.
+    async fn refresh_session(&self, id: &str) -> Result<Cached> {
+        let client_id = self
+            .client_id
+            .clone()
+            .ok_or_else(|| AppError::new("error.auth.not_configured"))?;
+        let refresh = self
+            .store
+            .get(&refresh_key(id))?
+            .ok_or_else(|| AppError::new("error.auth.relogin"))?;
+        let tokens = msa::refresh(&self.http, &self.endpoints, &client_id, &refresh).await?;
+        // Keep the rotated refresh token even if a later step loses the connection.
+        self.store.set(&refresh_key(id), &tokens.refresh_token)?;
+        let login = msa::minecraft_login(&self.http, &self.endpoints, &tokens.access_token)
+            .await
+            .map_err(|e| {
+                if e.key == "error.network" {
+                    e
+                } else {
+                    AppError::new("error.auth.relogin")
+                        .with_detail(format!("{}: {}", e.key, e.detail))
+                }
+            })?;
+        self.remember(id, &login);
+        Ok(self
+            .cache
+            .lock()
+            .unwrap()
+            .get(id)
+            .cloned()
+            .expect("just cached"))
+    }
+
     /// A session to launch with; refreshes the Microsoft sign-in when needed.
     pub async fn session(&self, id: &str) -> Result<Session> {
         let acc = self
@@ -359,36 +392,26 @@ impl AuthService {
         let cached = self.cache.lock().unwrap().get(id).cloned();
         let cached = match cached {
             Some(c) if c.expires > Instant::now() => c,
-            _ => {
-                let client_id = self
-                    .client_id
-                    .clone()
-                    .ok_or_else(|| AppError::new("error.auth.not_configured"))?;
-                let refresh = self
-                    .store
-                    .get(&refresh_key(id))?
-                    .ok_or_else(|| AppError::new("error.auth.relogin"))?;
-                let tokens =
-                    msa::refresh(&self.http, &self.endpoints, &client_id, &refresh).await?;
-                let login = msa::minecraft_login(&self.http, &self.endpoints, &tokens.access_token)
-                    .await
-                    .map_err(|e| {
-                        if e.key == "error.network" {
-                            e
-                        } else {
-                            AppError::new("error.auth.relogin")
-                                .with_detail(format!("{}: {}", e.key, e.detail))
-                        }
-                    })?;
-                self.store.set(&refresh_key(id), &tokens.refresh_token)?;
-                self.remember(id, &login);
-                self.cache
-                    .lock()
-                    .unwrap()
-                    .get(id)
-                    .cloned()
-                    .expect("just cached")
-            }
+            _ => match self.refresh_session(id).await {
+                Ok(c) => c,
+                // No network: play anyway with the cached profile, like the vanilla
+                // launcher. Single-player works; online servers will refuse.
+                Err(e) if e.key == "error.network" => {
+                    tracing::warn!(
+                        account = id,
+                        "offline: starting without a Minecraft token ({})",
+                        e.detail
+                    );
+                    return Ok(Session {
+                        username: acc.username,
+                        uuid,
+                        access_token: "0".into(),
+                        user_type: "msa".into(),
+                        xuid: None,
+                    });
+                }
+                Err(e) => return Err(e),
+            },
         };
         Ok(Session {
             username: acc.username,

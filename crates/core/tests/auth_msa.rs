@@ -289,3 +289,35 @@ fn session_debug_hides_token() {
     };
     assert!(!format!("{s:?}").contains("secret-token"));
 }
+
+#[tokio::test]
+async fn microsoft_account_plays_offline_when_network_is_down() {
+    let server = MockServer::start().await;
+    mount_chain(&server, 0, 200, None).await; // token already expired → would need a refresh
+    let dir = tempfile::tempdir().unwrap();
+    let store = Arc::new(MemoryStore::default());
+    let auth = service(&server, dir.path(), store.clone());
+    let (_, pending) = auth.start_device_login().await.unwrap();
+    let acc = pending.finish().await.unwrap();
+    // Restart the launcher with no network: nothing listens on port 9.
+    let dead = "http://127.0.0.1:9".to_string();
+    let ep = MsaEndpoints { login: dead.clone(), xbl: dead.clone(), xsts: dead.clone(), mc: dead };
+    let offline = AuthService::new(Paths::new(dir.path().into()), HttpClient::new().unwrap(), ep, store.clone()).with_client_id(Some("test-client".into()));
+    let s = offline.session(&acc.id).await.unwrap();
+    assert_eq!(
+        (s.username.as_str(), s.uuid.as_str()),
+        ("Notch", UUID_SIMPLE)
+    );
+    assert_eq!(
+        s.access_token, "0",
+        "no valid token offline; single-player still works"
+    );
+    assert_eq!(
+        store
+            .get(&format!("msa-refresh:{}", acc.id))
+            .unwrap()
+            .as_deref(),
+        Some("ms-refresh-1"),
+        "refresh token kept for later"
+    );
+}
