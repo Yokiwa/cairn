@@ -146,12 +146,15 @@ fn default_memory(st: &AppState) -> Result<u32> {
 /// Create the instance now and install it in the background.
 pub async fn instance_create(st: &AppState, req: NewInstance) -> Result<TaskId> {
     let inst = st.core.instances.create(req, default_memory(st)?)?;
+    // Held until the install finishes, so Play can't start on half-installed files.
+    let guard = st.core.running.try_register_install(&inst.id)?;
     let core = st.core.clone();
     let title = format!("install:{}", inst.id);
     Ok(st
         .core
         .tasks
         .spawn(title, move |progress, cancel| async move {
+            let _guard = guard;
             prepare_instance(&core, &inst, progress, cancel).await?;
             Ok(serde_json::json!({ "instance_id": inst.id }))
         }))
@@ -171,9 +174,7 @@ pub fn instance_update(st: &AppState, instance: Instance) -> Result<()> {
 }
 
 pub fn instance_delete(st: &AppState, id: &str) -> Result<()> {
-    if st.core.running.is_running(id) {
-        return Err(AppError::new("error.launch.already_running").with_param("id", id));
-    }
+    let _busy = st.core.running.try_register_install(id)?;
     st.core.instances.delete(id)
 }
 
@@ -199,9 +200,8 @@ pub async fn instance_launch(st: &AppState, id: &str) -> Result<TaskId> {
         .auth
         .active()?
         .ok_or_else(|| AppError::new("error.auth.no_account"))?;
-    if st.core.running.is_running(id) {
-        return Err(AppError::new("error.launch.already_running").with_param("id", id));
-    }
+    // Fail now (installing / already running) rather than inside the task.
+    drop(st.core.running.try_register(id)?);
     let (core, st2, id) = (st.core.clone(), st.clone(), id.to_string());
     Ok(st
         .core
@@ -348,6 +348,29 @@ mod tests {
         assert_eq!(
             instance_launch(&st, &id).await.unwrap_err().key,
             "error.auth.no_account"
+        );
+    }
+
+    #[tokio::test]
+    async fn launch_while_installing_is_refused() {
+        let (_d, st, _s) = state();
+        account_add_offline(&st, "Tester").await.unwrap();
+        instance_create(
+            &st,
+            NewInstance {
+                name: "I".into(),
+                minecraft: "1.20.1".into(),
+                loader: None,
+                memory_mb: None,
+            },
+        )
+        .await
+        .unwrap();
+        let id = instances_list(&st).unwrap().instances[0].id.clone();
+        // The install task is still retrying its downloads (~7s).
+        assert_eq!(
+            instance_launch(&st, &id).await.unwrap_err().key,
+            "error.instance.installing"
         );
     }
 

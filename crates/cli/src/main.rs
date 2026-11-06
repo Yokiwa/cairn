@@ -270,6 +270,7 @@ async fn run(cli: Cli) -> Result<ExitCode> {
                 "Created instance \"{}\" ({}). Installing…",
                 inst.name, inst.id
             );
+            let _guard = core.running.try_register_install(&inst.id)?;
             let (bar, progress) = progress_bar();
             let res = prepare_instance(&core, &inst, progress, CancellationToken::new()).await;
             bar.finish_and_clear();

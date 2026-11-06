@@ -203,6 +203,7 @@
     "error.launch.already_running": "这个实例已经在运行了。",
     "error.launch.spawn": "游戏启动不了。",
     "error.update": "检查更新失败。",
-    "error.unknown": "出了点问题。"
+    "error.unknown": "出了点问题。",
+    "error.instance.installing": "这个实例还在安装中，等下载完成后再试。"
   }
 }

@@ -200,6 +200,9 @@ async fn launcher_log_never_contains_token() {
         .with_ansi(false)
         .finish();
     let _g = tracing::subscriber::set_default(sub);
+    // Other tests may have hit these log callsites with no subscriber, which
+    // tracing caches globally as "never log"; re-evaluate now.
+    tracing::callsite::rebuild_interest_cache();
     // Offline sessions use "0" as the token; give the session a recognisable one.
     let (_l, log) = collector();
     launch_instance(&core, &id, &acc, log, noop(), CancellationToken::new())
