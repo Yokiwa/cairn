@@ -152,7 +152,7 @@ async fn install_fabric_writes_profile_and_libraries() {
         merged.main_class,
         "net.fabricmc.loader.impl.launch.knot.KnotClient"
     );
-    assert_eq!(merged.jar_id(), "1.20.1");
+    assert_eq!(merged.jar_id(), id);
     for lib in profile["libraries"].as_array().unwrap() {
         let p = cairn_core::versions::maven::maven_path(lib["name"].as_str().unwrap()).unwrap();
         assert!(core.paths.libraries_dir().join(p).exists());

@@ -207,6 +207,8 @@ pub fn merge(parent: VersionJson, child: VersionJson) -> VersionJson {
         java_version: child.java_version.or(parent.java_version),
         logging: child.logging.or(parent.logging),
         kind: child.kind.or(parent.kind),
-        jar: child.jar.or(parent.jar).or(Some(parent.id)),
+        // Like the vanilla launcher: a profile runs its own versions/<id>/<id>.jar
+        // (Forge/NeoForge ignoreLists refer to it as ${version_name}.jar).
+        jar: child.jar,
     }
 }

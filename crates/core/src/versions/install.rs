@@ -313,6 +313,22 @@ pub async fn install_version(
     let v = load_installed(&core.paths, id)?
         .ok_or_else(|| AppError::new("error.version.not_found").with_param("version", id))?;
 
+    // A profile gets its own copy of the parent's (already verified) client jar.
+    if let Some(parent) = &raw.inherits_from {
+        let own = client_jar_path(&core.paths, &v);
+        if let Some(p) = load_installed(&core.paths, parent)? {
+            let parent_jar = client_jar_path(&core.paths, &p);
+            if !own.exists() && parent_jar.is_file() && own != parent_jar {
+                if let Some(dir) = own.parent() {
+                    std::fs::create_dir_all(dir)?;
+                }
+                if std::fs::hard_link(&parent_jar, &own).is_err() {
+                    std::fs::copy(&parent_jar, &own)?;
+                }
+            }
+        }
+    }
+
     let env = Environment::current();
     let items = plan_game_files(&v, &env, &core.paths, &core.endpoints)?;
     if let Some(ai) = &v.asset_index {

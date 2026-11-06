@@ -299,3 +299,42 @@ async fn unknown_version_is_a_clear_error() {
     assert_eq!(err.key, "error.version.not_found");
     assert_eq!(err.params.get("version").map(String::as_str), Some("9.9.9"));
 }
+
+#[tokio::test]
+async fn inheriting_profile_gets_its_own_client_jar_copied_from_parent() {
+    let fake = fake_mojang().await;
+    let dir = tempfile::tempdir().unwrap();
+    let core = core_for(dir.path(), &fake.server);
+    install_version(&core, "1.20.1", noop(), CancellationToken::new())
+        .await
+        .unwrap();
+    let before = fake.server.received_requests().await.unwrap().len();
+
+    let id = "1.20.1-forge-47.4.28";
+    let profile = json!({"id": id, "inheritsFrom": "1.20.1", "mainClass": "cpw.mods.bootstraplauncher.BootstrapLauncher", "libraries": []});
+    let vdir = core.paths.versions_dir().join(id);
+    std::fs::create_dir_all(&vdir).unwrap();
+    std::fs::write(
+        vdir.join(format!("{id}.json")),
+        serde_json::to_vec(&profile).unwrap(),
+    )
+    .unwrap();
+
+    let v = install_version(&core, id, noop(), CancellationToken::new())
+        .await
+        .unwrap();
+    let own = vdir.join(format!("{id}.jar"));
+    assert_eq!(
+        cairn_core::versions::install::client_jar_path(&core.paths, &v),
+        own
+    );
+    assert_eq!(
+        std::fs::read(&own).unwrap(),
+        std::fs::read(core.paths.versions_dir().join("1.20.1/1.20.1.jar")).unwrap()
+    );
+    assert_eq!(
+        fake.server.received_requests().await.unwrap().len(),
+        before,
+        "copied locally, not downloaded again"
+    );
+}

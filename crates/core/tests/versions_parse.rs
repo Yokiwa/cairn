@@ -131,6 +131,8 @@ fn merge_fabric_over_vanilla() {
     let jvm = &m.arguments.as_ref().unwrap().jvm;
     assert!(jvm.len() > parent.arguments.as_ref().unwrap().jvm.len());
     assert!(m.inherits_from.is_none());
+    // Forge/NeoForge ignoreLists name "${version_name}.jar": the client jar must be the profile's own.
+    assert_eq!(m.jar_id(), m.id);
 }
 
 #[test]
