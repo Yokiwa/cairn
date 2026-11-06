@@ -1,0 +1,5 @@
+# Keep LF everywhere so generated files (ui/src/bindings) and scripts match on Windows too.
+* text=auto eol=lf
+*.png binary
+*.ico binary
+*.icns binary
