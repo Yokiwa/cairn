@@ -3,8 +3,10 @@
 // Chinese message in ui/src/locales/*.json (under "errors").
 import { readFileSync, readdirSync, statSync } from "node:fs";
 import { join } from "node:path";
+import { fileURLToPath } from "node:url";
 
-const root = new URL("..", import.meta.url).pathname;
+// fileURLToPath, not URL.pathname: on Windows the latter gives "/D:/..." which is not a path.
+const root = fileURLToPath(new URL("..", import.meta.url));
 const keys = new Set(["error.unknown"]); // produced by the UI itself
 function walk(dir) {
   for (const name of readdirSync(dir)) {
