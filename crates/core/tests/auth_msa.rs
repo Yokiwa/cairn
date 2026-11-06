@@ -301,8 +301,19 @@ async fn microsoft_account_plays_offline_when_network_is_down() {
     let acc = pending.finish().await.unwrap();
     // Restart the launcher with no network: nothing listens on port 9.
     let dead = "http://127.0.0.1:9".to_string();
-    let ep = MsaEndpoints { login: dead.clone(), xbl: dead.clone(), xsts: dead.clone(), mc: dead };
-    let offline = AuthService::new(Paths::new(dir.path().into()), HttpClient::new().unwrap(), ep, store.clone()).with_client_id(Some("test-client".into()));
+    let ep = MsaEndpoints {
+        login: dead.clone(),
+        xbl: dead.clone(),
+        xsts: dead.clone(),
+        mc: dead,
+    };
+    let offline = AuthService::new(
+        Paths::new(dir.path().into()),
+        HttpClient::new().unwrap(),
+        ep,
+        store.clone(),
+    )
+    .with_client_id(Some("test-client".into()));
     let s = offline.session(&acc.id).await.unwrap();
     assert_eq!(
         (s.username.as_str(), s.uuid.as_str()),

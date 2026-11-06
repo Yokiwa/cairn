@@ -88,6 +88,11 @@ fn candidate_homes(paths: &Paths) -> Vec<PathBuf> {
             continue;
         };
         for e in rd.flatten() {
+            // Skip hidden and temporary folders, e.g. an interrupted ".temurin-17.tmp" unpack.
+            let name = e.file_name().to_string_lossy().into_owned();
+            if name.starts_with('.') || name.ends_with(".tmp") {
+                continue;
+            }
             let p = e.path();
             homes.push(p.join("Contents").join("Home"));
             homes.push(p.clone());
@@ -169,6 +174,25 @@ mod tests {
         assert_eq!(
             (j.major, j.version.as_str(), j.arch.as_str(), j.managed),
             (17, "17.0.9", "x86_64", true)
+        );
+    }
+
+    #[test]
+    fn ignores_half_extracted_downloads() {
+        let dir = tempfile::tempdir().unwrap();
+        let paths = crate::Paths::new(dir.path().to_path_buf());
+        // An extraction that was interrupted (download_java unpacks into .temurin-N.tmp first).
+        let home = paths
+            .java_dir()
+            .join(".temurin-17.tmp")
+            .join("jdk-17.0.9+9-jre");
+        std::fs::create_dir_all(home.join("bin")).unwrap();
+        std::fs::write(home.join("release"), "JAVA_VERSION=\"17.0.9\"\n").unwrap();
+        std::fs::write(home.join("bin").join(java_exe_name()), b"").unwrap();
+        let found = find_installations(&paths);
+        assert!(
+            !found.iter().any(|j| j.path.starts_with(paths.java_dir())),
+            "{found:?}"
         );
     }
 
