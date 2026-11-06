@@ -492,6 +492,7 @@ name = "cairn-app"
 version = "0.1.0"
 dependencies = [
  "cairn-core",
+ "chrono",
  "serde",
  "serde_json",
  "tauri",

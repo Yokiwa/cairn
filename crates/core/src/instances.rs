@@ -121,6 +121,8 @@ pub fn slugify(name: &str) -> String {
 #[derive(Debug, Clone)]
 pub struct InstanceStore {
     paths: Paths,
+    /// Serialises read-modify-write updates within this process.
+    write_lock: std::sync::Arc<std::sync::Mutex<()>>,
 }
 
 fn check_file_name(name: &str) -> Result<()> {
@@ -132,7 +134,21 @@ fn check_file_name(name: &str) -> Result<()> {
 
 impl InstanceStore {
     pub fn new(paths: Paths) -> Self {
-        Self { paths }
+        Self {
+            paths,
+            write_lock: Default::default(),
+        }
+    }
+
+    /// Read the instance fresh from disk, change it, write it back. Use this
+    /// instead of saving an old copy, which would undo other writers' changes.
+    pub fn update(&self, id: &str, f: impl FnOnce(&mut Instance)) -> Result<Instance> {
+        let _g = self.write_lock.lock().unwrap_or_else(|e| e.into_inner());
+        let mut inst = self.get(id)?;
+        f(&mut inst);
+        inst.id = id.to_string();
+        self.save(&inst)?;
+        Ok(inst)
     }
 
     pub fn paths(&self) -> &Paths {

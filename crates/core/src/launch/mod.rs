@@ -57,12 +57,12 @@ pub async fn prepare_instance(
                         cancel.clone(),
                     )
                     .await?;
-                    let mut updated = core.instances.get(&instance.id)?;
-                    updated.launch_version = Some(LaunchVersion {
+                    let lv = LaunchVersion {
                         loader: loader.clone(),
                         id: id.clone(),
-                    });
-                    core.instances.save(&updated)?;
+                    };
+                    core.instances
+                        .update(&instance.id, |i| i.launch_version = Some(lv))?;
                     id
                 }
             }
@@ -127,9 +127,8 @@ pub async fn launch_instance(
     let cmd = args::build_command(&ctx)?;
     tracing::info!(instance = instance_id, program = %cmd.program.display(), "launching: {}", cmd.redacted().join(" "));
 
-    let mut played = instance.clone();
-    played.last_played_at = Some(Utc::now());
-    core.instances.save(&played)?;
+    core.instances
+        .update(instance_id, |i| i.last_played_at = Some(Utc::now()))?;
 
     std::fs::create_dir_all(&cmd.cwd)?;
     let mut child = tokio::process::Command::new(&cmd.program)

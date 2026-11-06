@@ -212,3 +212,57 @@ async fn launcher_log_never_contains_token() {
         "token redacted: {text}"
     );
 }
+
+#[tokio::test]
+async fn launch_keeps_the_installed_loader_profile() {
+    use cairn_core::instances::{LoaderKind, LoaderSpec};
+    use wiremock::matchers::{method, path};
+    use wiremock::{Mock, MockServer, ResponseTemplate};
+    let server = MockServer::start().await;
+    let profile = json!({"id": "fabric-loader-0.1-1.20.1", "inheritsFrom": "1.20.1", "mainClass": "net.fabricmc.Knot", "libraries": [], "arguments": {"game": [], "jvm": []}});
+    Mock::given(method("GET"))
+        .and(path("/v2/versions/loader/1.20.1/0.1/profile/json"))
+        .respond_with(ResponseTemplate::new(200).set_body_json(profile))
+        .expect(1)
+        .mount(&server)
+        .await;
+
+    let (dir, _old, id, _acc) = setup(None).await;
+    let core = Arc::new(
+        Core::with_endpoints(
+            Paths::new(dir.path().join("data")),
+            Endpoints::all_at(&server.uri()),
+        )
+        .unwrap(),
+    );
+    let acc = core.auth.add_offline("Tester").await.unwrap();
+    let mut inst = core.instances.get(&id).unwrap();
+    inst.loader = Some(LoaderSpec {
+        kind: LoaderKind::Fabric,
+        version: "0.1".into(),
+    });
+    core.instances.save(&inst).unwrap();
+
+    let (_l, log) = collector();
+    launch_instance(
+        &core,
+        &id,
+        &acc.id,
+        log.clone(),
+        noop(),
+        CancellationToken::new(),
+    )
+    .await
+    .unwrap();
+    let after = core.instances.get(&id).unwrap();
+    assert_eq!(
+        after.launch_version.as_ref().map(|l| l.id.as_str()),
+        Some("fabric-loader-0.1-1.20.1"),
+        "launch must not wipe launch_version"
+    );
+    assert!(after.last_played_at.is_some());
+    // Second launch reuses the installed profile: no second profile request (expect(1) above).
+    launch_instance(&core, &id, &acc.id, log, noop(), CancellationToken::new())
+        .await
+        .unwrap();
+}

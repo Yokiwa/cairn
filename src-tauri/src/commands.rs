@@ -157,9 +157,17 @@ pub async fn instance_create(st: &AppState, req: NewInstance) -> Result<TaskId> 
         }))
 }
 
+/// Apply the fields a person edits in the UI; launcher-owned fields
+/// (launch_version, last_played_at, mods, created_at) stay as they are on disk.
 pub fn instance_update(st: &AppState, instance: Instance) -> Result<()> {
-    st.core.instances.get(&instance.id)?;
-    st.core.instances.save(&instance)
+    st.core.instances.update(&instance.id.clone(), |i| {
+        i.name = instance.name;
+        i.memory_mb = instance.memory_mb;
+        i.java = instance.java;
+        i.jvm_args = instance.jvm_args;
+        i.loader = instance.loader;
+    })?;
+    Ok(())
 }
 
 pub fn instance_delete(st: &AppState, id: &str) -> Result<()> {
@@ -374,6 +382,45 @@ mod tests {
         std::fs::write(mods.join("a.jar"), b"x").unwrap();
         instance_mod_toggle(&st, &id, "a.jar", false).unwrap();
         assert!(!instance_mods(&st, &id).unwrap()[0].enabled);
+    }
+
+    #[tokio::test]
+    async fn instance_update_keeps_launcher_owned_fields() {
+        let (_d, st, _s) = state();
+        instance_create(
+            &st,
+            NewInstance {
+                name: "U".into(),
+                minecraft: "1.20.1".into(),
+                loader: None,
+                memory_mb: None,
+            },
+        )
+        .await
+        .unwrap();
+        let id = instances_list(&st).unwrap().instances[0].id.clone();
+        let stale = instance_get(&st, &id).unwrap();
+        // Meanwhile the launcher records the installed profile and the play time.
+        let mut fresh = stale.clone();
+        fresh.launch_version = Some(cairn_core::instances::LaunchVersion {
+            loader: cairn_core::instances::LoaderSpec {
+                kind: cairn_core::instances::LoaderKind::Fabric,
+                version: "0.1".into(),
+            },
+            id: "fabric-loader-0.1-1.20.1".into(),
+        });
+        fresh.last_played_at = Some(chrono::Utc::now());
+        st.core.instances.save(&fresh).unwrap();
+        // The UI saves its (stale) copy with a new memory value.
+        let edited = Instance {
+            memory_mb: 4096,
+            ..stale
+        };
+        instance_update(&st, edited).unwrap();
+        let after = instance_get(&st, &id).unwrap();
+        assert_eq!(after.memory_mb, 4096);
+        assert_eq!(after.launch_version, fresh.launch_version);
+        assert_eq!(after.last_played_at, fresh.last_played_at);
     }
 
     #[test]
